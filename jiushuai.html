@@ -82,15 +82,15 @@
             cursor: not-allowed;
         }
         #refresh-btn {
-    width: 100%; /* 设置宽度为当前宽度的*/
-    margin: 20px auto; /* 上下外边距为20px，左右外边距为auto，使其水平居中 */
-    padding: 10px 15px;
-    border: none;
-    background-color: #28a745;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-}
+            width: 100%;
+            margin: 20px auto;
+            padding: 10px 15px;
+            border: none;
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -116,32 +116,35 @@
             {"role": "system", "content": "你是 玖数 人工智能助手。你是一个有20年经验的高级学者，精通数学问题。每个题目一定要多种不同的方法来解答，每种方法给出重要的思维模型。并会给出题涉及的相关知识点。玖数 为专有名词，不可翻译成其他语言。"}
         ];
 
-        userInput.addEventListener('input', () => {
-            sendBtn.disabled = userInput.value.trim() === '';
-        });
-
-        sendBtn.addEventListener('click', () => {
-            sendMessage();
-        });
-
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
+        document.addEventListener('DOMContentLoaded', () => {
+            const apiKey = localStorage.getItem('apiKey') || prompt("请输入API密钥:");
+            if (apiKey) {
+                localStorage.setItem('apiKey', apiKey);
+            } else {
+                alert("没有API密钥，无法继续操作。");
             }
+
+            userInput.addEventListener('input', () => {
+                sendBtn.disabled = userInput.value.trim() === '';
+            });
+
+            sendBtn.addEventListener('click', () => {
+                sendMessage();
+            });
+
+            userInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            refreshBtn.addEventListener('click', () => {
+                location.reload();
+            });
         });
 
-        refreshBtn.addEventListener('click', () => {
-            location.reload();
-        });
-
-
-function selectApiKey() {
-    return 'sk-EpkTWsiEi6eYzB0omW2jvaOoZM4Od5lrkqMk6uIlYznEyFx9'; // 张志伟
-}
-
-
-        function sendMessage() {
+        async function sendMessage() {
             const userMessage = userInput.value.trim();
             if (userMessage === '') return;
 
@@ -156,7 +159,7 @@ function selectApiKey() {
         }
 
         async function getAssistantReply() {
-            const apiKey = selectApiKey();
+            const apiKey = localStorage.getItem('apiKey');
             const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
                 method: 'POST',
                 headers: {
